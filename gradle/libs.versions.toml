@@ -1,0 +1,13 @@
+[versions]
+junit-jupiter-engine = "5.10.3"
+
+[libraries]
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.9.0" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version = "7.0.0" }
+logback = { module = "ch.qos.logback:logback-classic", version = "1.5.8" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version = "5.0.0" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.0.20" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.1" }

@@ -1,0 +1,17 @@
+### IDEA ###
+out/
+!src/main/**/out/
+!src/test/**/out/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Gradle ###
+# Gradle project-specific cache directory
+.gradle/
+
+# Gradle build output directory
+build/
