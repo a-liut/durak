@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.aliut.durak.game.player.HumanLocalPlayer
+import org.aliut.durak.game.player.LocalPlayer
 import org.aliut.durak.game.player.Player
 import org.aliut.durak.game.player.RemotePlayer
 import java.net.ServerSocket
@@ -17,7 +17,7 @@ const val SERVER_SOCKET_PORT = 9999
 data class MultiplayerGameConfig(
     val port: Int,
     val playersCount: Int,
-    val localPlayer: HumanLocalPlayer,
+    val localPlayer: LocalPlayer,
 )
 
 class MultiplayerGameRunner(private val config: MultiplayerGameConfig) : GameRunner() {

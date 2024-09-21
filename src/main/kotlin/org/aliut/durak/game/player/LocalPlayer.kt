@@ -3,7 +3,7 @@ package org.aliut.durak.game.player
 import org.aliut.durak.InputUtils
 import org.aliut.durak.game.Card
 
-class HumanLocalPlayer(name: String) : Player(name) {
+class LocalPlayer(name: String) : Player(name) {
     override suspend fun selectAttackCard(playableCards: List<Card>): Card {
         sendMessage("Playable cards: $playableCards (hand: $hand)")
 

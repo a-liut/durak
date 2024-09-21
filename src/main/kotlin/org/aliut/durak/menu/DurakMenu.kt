@@ -10,7 +10,6 @@ class DurakMenu : SuspendingCliktCommand(name = "durak") {
         fun create() =
             DurakMenu()
                 .subcommands(
-                    StartLocalGameCommand(),
                     StartMultiplayerGameCommand(),
                     JoinMultiplayerGameCommand(),
                 )

@@ -8,7 +8,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
 import org.aliut.durak.game.Durak
-import org.aliut.durak.game.player.HumanLocalPlayer
+import org.aliut.durak.game.player.LocalPlayer
 import org.aliut.durak.runner.MultiplayerGameConfig
 import org.aliut.durak.runner.MultiplayerGameRunner
 import org.aliut.durak.runner.SERVER_SOCKET_PORT
@@ -29,7 +29,7 @@ class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create-multip
     override fun help(context: Context): String = "Create a multiplayer game"
 
     override suspend fun run() {
-        val localPlayer = HumanLocalPlayer(localPlayerName)
+        val localPlayer = LocalPlayer(localPlayerName)
 
         val config = MultiplayerGameConfig(port = port, playersCount = playersCount, localPlayer = localPlayer)
 
