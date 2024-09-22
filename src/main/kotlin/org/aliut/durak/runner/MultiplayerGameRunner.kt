@@ -6,8 +6,6 @@ import org.aliut.durak.game.player.LocalPlayer
 import org.aliut.durak.game.player.Player
 import org.aliut.durak.gameroom.MultiplayerGameRoom
 
-const val SERVER_SOCKET_PORT = 9999
-
 data class MultiplayerGameConfig(
     val port: Int,
     val playersCount: Int,

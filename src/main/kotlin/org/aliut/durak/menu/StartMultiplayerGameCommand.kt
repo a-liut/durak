@@ -9,9 +9,9 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
 import org.aliut.durak.game.Durak
 import org.aliut.durak.game.player.LocalPlayer
+import org.aliut.durak.gameroom.SERVER_SOCKET_PORT
 import org.aliut.durak.runner.MultiplayerGameConfig
 import org.aliut.durak.runner.MultiplayerGameRunner
-import org.aliut.durak.runner.SERVER_SOCKET_PORT
 
 class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create-multiplayer") {
     private val port by option(help = "Server port").int().default(SERVER_SOCKET_PORT)
@@ -24,7 +24,9 @@ class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create-multip
     )
         .int()
         .required()
-        .check("Players must be between 2 and 6") { it in Durak.PLAYER_COUNT_MIN..Durak.PLAYER_COUNT_MAX }
+        .check("Players must be between ${Durak.PLAYER_COUNT_MIN} and ${Durak.PLAYER_COUNT_MAX}") {
+            it in Durak.PLAYER_COUNT_MIN..Durak.PLAYER_COUNT_MAX
+        }
 
     override fun help(context: Context): String = "Create a multiplayer game"
 

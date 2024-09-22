@@ -6,9 +6,9 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
+import org.aliut.durak.gameroom.SERVER_SOCKET_PORT
 import org.aliut.durak.runner.JoinRemoteSessionService
 import org.aliut.durak.runner.RemoteSessionConfig
-import org.aliut.durak.runner.SERVER_SOCKET_PORT
 
 class JoinMultiplayerGameCommand : SuspendingCliktCommand(name = "join-multiplayer") {
     private val host by option(help = "Host IP address").default("localhost")
