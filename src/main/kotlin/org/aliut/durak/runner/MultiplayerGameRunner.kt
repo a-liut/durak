@@ -1,13 +1,10 @@
 package org.aliut.durak.runner
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.aliut.durak.game.player.LocalPlayer
 import org.aliut.durak.game.player.Player
 import org.aliut.durak.gameroom.MultiplayerGameRoom
-
-private val logger = KotlinLogging.logger { }
 
 const val SERVER_SOCKET_PORT = 9999
 
