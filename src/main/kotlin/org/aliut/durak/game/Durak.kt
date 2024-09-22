@@ -1,7 +1,6 @@
 package org.aliut.durak.game
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import org.aliut.durak.game.player.Player
 
 const val PLAYER_HAND_SIZE = 6
@@ -102,7 +101,7 @@ class Durak(
     }
 
     suspend fun start() =
-        withContext(Dispatchers.Default) {
+        coroutineScope {
             sendMessageToAllPlayers("Game started")
             sendMessageToAllPlayers("Players: ${players.joinToString { it.name }}")
             sendMessageToAllPlayers("Main card: $mainCard")
@@ -142,7 +141,7 @@ class Durak(
 
                         when (result) {
                             RoundResult.PlayerWon -> {
-                                return@withContext
+                                return@coroutineScope
                             }
 
                             RoundResult.NoDefense -> {
