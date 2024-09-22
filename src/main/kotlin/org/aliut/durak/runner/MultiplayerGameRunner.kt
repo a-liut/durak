@@ -1,7 +1,6 @@
 package org.aliut.durak.runner
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import org.aliut.durak.game.player.LocalPlayer
 import org.aliut.durak.game.player.Player
 import org.aliut.durak.gameroom.MultiplayerGameRoom
@@ -14,7 +13,7 @@ data class MultiplayerGameConfig(
 
 class MultiplayerGameRunner(private val config: MultiplayerGameConfig) : GameRunner() {
     override suspend fun initPlayers() =
-        withContext(Dispatchers.Default) {
+        coroutineScope {
             println("Creating game room...")
 
             val initialPlayers: MutableList<Player> = mutableListOf(config.localPlayer)
