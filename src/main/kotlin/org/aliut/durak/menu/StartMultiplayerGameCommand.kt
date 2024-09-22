@@ -13,7 +13,7 @@ import org.aliut.durak.gameroom.SERVER_SOCKET_PORT
 import org.aliut.durak.runner.MultiplayerGameConfig
 import org.aliut.durak.runner.MultiplayerGameRunner
 
-class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create-multiplayer") {
+class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create") {
     private val port by option(help = "Server port").int().default(SERVER_SOCKET_PORT)
     private val localPlayerName by option("-pn", "--player-name", help = "Your name")
         .required()

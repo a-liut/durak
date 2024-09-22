@@ -10,7 +10,7 @@ import org.aliut.durak.gameroom.SERVER_SOCKET_PORT
 import org.aliut.durak.runner.JoinRemoteSessionService
 import org.aliut.durak.runner.RemoteSessionConfig
 
-class JoinMultiplayerGameCommand : SuspendingCliktCommand(name = "join-multiplayer") {
+class JoinMultiplayerGameCommand : SuspendingCliktCommand(name = "join") {
     private val host by option(help = "Host IP address").default("localhost")
     private val port by option(help = "Host port").int().default(SERVER_SOCKET_PORT)
     private val localPlayerName by option("-pn", "--player-name", help = "Your name")
