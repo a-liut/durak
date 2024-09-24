@@ -10,7 +10,8 @@ import java.net.ServerSocket
 
 private val logger = KotlinLogging.logger { }
 
-const val SERVER_SOCKET_PORT = 9999
+const val DEFAULT_SERVER_SOCKET_PORT = 9999
+const val DEFAULT_SERVER_SOCKET_HOST = "localhost"
 
 class MultiplayerGameRoom(
     val playersCount: Int,

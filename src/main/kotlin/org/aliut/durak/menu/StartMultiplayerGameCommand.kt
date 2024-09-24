@@ -9,12 +9,12 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
 import org.aliut.durak.game.Durak
 import org.aliut.durak.game.player.LocalPlayer
-import org.aliut.durak.gameroom.SERVER_SOCKET_PORT
+import org.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_PORT
 import org.aliut.durak.runner.MultiplayerGameConfig
 import org.aliut.durak.runner.MultiplayerGameRunner
 
 class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create") {
-    private val port by option(help = "Server port").int().default(SERVER_SOCKET_PORT)
+    private val port by option("-p", "--port", help = "Server port").int().default(DEFAULT_SERVER_SOCKET_PORT)
     private val localPlayerName by option("-pn", "--player-name", help = "Your name")
         .required()
     private val playersCount by option(
