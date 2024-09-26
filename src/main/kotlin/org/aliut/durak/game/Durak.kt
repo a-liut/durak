@@ -201,7 +201,7 @@ class Durak(
 
         // skip attack if attacker has no playable cards
         if (attackerPlayableCards.isEmpty()) {
-            sendMessageToAllPlayers("attacker has no playable cards. Skipping attack")
+            sendMessageToAllPlayers("attacker has no playable cards. Skipping attack.")
             return RoundResult.NoAttack
         }
 
