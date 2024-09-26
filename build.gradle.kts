@@ -1,8 +1,11 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm)
+    // Apply Ktlint plugin (https://github.com/JLLeitschuh/ktlint-gradle)
     alias(libs.plugins.ktlint)
+    // Apply shadow plugin (https://github.com/GradleUp/shadow)
     alias(libs.plugins.shadow)
+    // Apply changelog plugin (https://github.com/JetBrains/gradle-changelog-plugin)
     alias(libs.plugins.changelog)
 
     // Apply the application plugin to add support for building a CLI application in Java.
