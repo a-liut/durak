@@ -2,17 +2,20 @@
 
 `durak` is an implementation of the classic russian card game [_Durak_](https://en.wikipedia.org/wiki/Durak).
 
-The game is multiplayer, from 2 to 6 players. A _host_ player creates the game session, then waits for other players to join.
+The game is multiplayer, from 2 to 6 players. A _host_ player creates the game session, then waits for other players to
+join.
 When all players have joined the session, the game starts.
 
 **Create a new game session**
+
 ```bash
-durak create --player-count 2 --player-name Alice
+durak create --player-count 2 --player-name Mario
 ```
 
 **Join a game session**
+
 ```bash
-durak join create --player-name Bob
+durak join create --player-name Luigi
 ```
 
 ## Commands
@@ -21,35 +24,46 @@ durak join create --player-name Bob
 
 `durak create` creates a new game session. It accepts the following input:
 
-- `--player-count <n>`, `-pc <n>` (Integer): how many players will be playing
-- `--player-name <name>`, `-pn <name>` (String): the name of the local player
-- `--port` (Integer, _default_: 9999): port to be used for communicating with other players
+| Name                | Type    | Default | Optional | Description                                          |
+|---------------------|---------|---------|----------|------------------------------------------------------|
+| --player-count, -pc | Integer |         | no       | How many players will be playing                     |
+| --player-name, -pn  | String  |         | no       | The name of the local player                         |
+| --port, -p          | Integer | 9999    | yes      | Port to be used for communicating with other players |
 
 ### Join game session
 
-`durak join` joins an existing game session. It accepts the following input:
+`durak join` joins an existing game session. It accepts the following inputs:
 
-- `--host` (String, _default_: `"localhost"`): the url of the host
-- `--port` (Integer, _default_: 9999): port to be used for communicating with the host
-- `--player-name <name>`, `-pn <name>` (String): the name of the local player
+| Name               | Type    | Default   | Optional | Description                                     |
+|--------------------|---------|-----------|----------|-------------------------------------------------|
+| --host, -h         | String  | localhost | yes      | The url of the host                             |
+| --port, -p         | Integer | 9999      | yes      | Port to be used for communicating with the host |
+| --player-name, -pn | String  |           | no       | The name of the local player                    |
 
-## Architecture
+## Running the game
 
-The game is entirely developed in Kotlin, and uses sockets to enable communication between players.
-Sockets are created during the initialization of the game, and kept open until the game ends.
+### Gradle run
 
-There are two modes in which the application runs:
+You can run `durak` via the Gradle `run` task:
 
-- as a _host_
-- as a _client_
+```bash
+./gradlew run --args="create-multiplayer -pc 2 -pn Mario"
+```
 
-### The host
+```bash
+./gradlew run --args="join-multiplayer -pn Mario"
+```
 
-The host stores the game state and send messages to other players via sockets.
-It receives input from each player and updates the game state when needed.
+### Java jar
 
-### The client
+Build the game by running:
 
-The clients do not store any game data: they only send and receive messages to and from the host.
+```gradle
+./gradlew shadowJar
+```
 
-## Building the game
+Then run the jar file:
+
+```gradle
+ java -jar build/libs/durak-0.0.1-all.jar
+```
