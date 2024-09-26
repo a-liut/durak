@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.shadow)
     // Apply changelog plugin (https://github.com/JetBrains/gradle-changelog-plugin)
     alias(libs.plugins.changelog)
+    // Apply detekt plugin
+    alias(libs.plugins.detekt)
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
