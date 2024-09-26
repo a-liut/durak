@@ -16,7 +16,7 @@ abstract class GameRunner {
             players.forEach(::disposePlayer)
         }
 
-        println("Winner: ${durak.winner().name}")
+        println("Winner: ${durak.winner.name}")
     }
 
     abstract suspend fun initPlayers(): List<Player>

@@ -8,19 +8,19 @@ const val PLAYER_HAND_SIZE = 6
 class Durak(
     private val players: List<Player>,
 ) {
-    private val deck = Deck()
+    val deck = Deck()
+    private val table: Table = Table()
     private var mainCard: Card? = deck.drawCard()
     private val mainSuit: Suit = mainCard!!.suit
 
     private var currentDefenderIndex = 0
 
-    private val table: MutableSet<Challenge> = mutableSetOf()
-
-    fun winner(): Player = players.first { it.hand.isEmpty() }
+    val winner: Player
+        get() = players.first { it.hand.isEmpty() }
 
     private fun attack(card: Card): Challenge =
         Challenge(card, null).also {
-            table.add(it)
+            table.challenges.add(it)
         }
 
     private fun defend(
@@ -28,10 +28,6 @@ class Durak(
         defense: Card,
     ) {
         challenge.defense = defense
-    }
-
-    private fun clearTable() {
-        table.clear()
     }
 
     private fun refillHand(player: Player) {
@@ -53,193 +49,194 @@ class Durak(
         currentDefenderIndex = (currentDefenderIndex + 1) % players.size
     }
 
-    private fun previousPlayer(): Player = players[(players.size + currentDefenderIndex - 1) % players.size]
+    private val previousPlayer: Player
+        get() = players[(players.size + currentDefenderIndex - 1) % players.size]
 
-    private fun nextPlayer(): Player = players[(currentDefenderIndex + 1) % players.size]
+    private val nextPlayer: Player
+        get() = players[(currentDefenderIndex + 1) % players.size]
 
-    private fun attackers(): List<Player> = listOf(nextPlayer(), previousPlayer()).distinct()
+    private val attackers: List<Player>
+        get() = listOf(nextPlayer, previousPlayer).distinct()
 
-    private fun defender(): Player = players[currentDefenderIndex]
-
-    private fun openChallenges(): Set<Challenge> = table.filter { it.defense == null }.toSet()
-
-    private fun attackerPlayableCards(playerHand: Set<Card>): Set<Card> {
-        if (table.isEmpty()) {
-            return playerHand
-        }
-
-        return playerHand
-            .filter { playerCard ->
-                table.any {
-                        challenge ->
-                    challenge.attack.rank == playerCard.rank ||
-                        challenge.defense!!.rank == playerCard.rank
-                }
-            }
-            .toSet()
-    }
-
-    private fun defenderPlayableCards(playerHand: Set<Card>): Set<Card> {
-        if (table.isEmpty()) {
-            error("Table is empty: defender cannot play")
-        }
-
-        val openAttacks = openChallenges().map { it.attack }
-
-        return playerHand.filter { playerCard ->
-            openAttacks.any {
-                playerCard.suit == it.suit && playerCard.greaterThan(it) ||
-                    playerCard.suit == mainSuit && it.suit != mainSuit ||
-                    playerCard.suit == mainSuit && playerCard.greaterThan(it)
-            }
-        }.toSet()
-    }
-
-    private suspend fun sendMessageToAllPlayers(message: String) {
-        players
-            .forEach { it.sendMessage(message) }
-    }
+    private val defender: Player
+        get() = players[currentDefenderIndex]
 
     suspend fun start() =
         coroutineScope {
-            sendMessageToAllPlayers("Game started")
-            sendMessageToAllPlayers("Players: ${players.joinToString { it.name }}")
-            sendMessageToAllPlayers("Main card: $mainCard")
-            sendMessageToAllPlayers("Main suit: $mainSuit")
+            players.forEach {
+                it.sendMessage("Game started")
+                it.sendMessage("Players: ${players.joinToString { it.name }}")
+                it.sendMessage("Main card: $mainCard")
+                it.sendMessage("Main suit: $mainSuit")
+            }
 
             for (player in players) {
                 refillHand(player)
             }
 
-            while (true) {
-                for (player in players) {
-                    player.sendMessage("Hand: ${player.hand}")
-                }
-
-                val defender = defender()
-
-                for (player in players) {
-                    val message =
-                        if (player == defender) {
-                            "You are the defender!"
-                        } else {
-                            "$defender is the defender"
-                        }
-
-                    player.sendMessage(message)
-                }
-
-                val attackers = attackers()
-
-                var noDefense = false
-                var currentAttackerIndex = 0
-                while (!noDefense && currentAttackerIndex < attackers.size) {
-                    val attacker = attackers[currentAttackerIndex]
-
-                    do {
-                        val result = playRound(defender, attacker)
-
-                        when (result) {
-                            RoundResult.PlayerWon -> {
-                                return@coroutineScope
-                            }
-
-                            RoundResult.NoDefense -> {
-                                // defender takes all cards on the table
-                                val cardsOnTheTable =
-                                    table.flatMap { listOf(it.attack, it.defense) }.filterNotNull().toSet()
-                                defender.hand.addAll(cardsOnTheTable)
-
-                                noDefense = true
-                            }
-
-                            RoundResult.NoAttack -> {
-                                currentAttackerIndex++
-                            }
-
-                            RoundResult.Continue -> {}
-                        }
-                    } while (result == RoundResult.Continue)
-                }
-
-                // prepare next turn
-                clearTable()
-
-                for (attacker in attackers) {
-                    refillHand(attacker)
-                }
-
-                refillHand(defender)
-
-                nextTurn()
-                if (noDefense) {
-                    // skip the defender's turn
-                    nextTurn()
-                }
-            }
+            do {
+                val roundResult = round()
+            } while (roundResult)
         }
 
-    private suspend fun playRound(
-        defender: Player,
-        attacker: Player,
-    ): RoundResult {
-        sendMessageToAllPlayers("Table: $table")
-        sendMessageToAllPlayers("Deck: ${deck.size}")
+    private suspend fun round(): Boolean {
+        players.forEach { player ->
+            player.sendMessage("Hand: ${player.hand}")
 
-        for (player in players) {
             val message =
-                if (player == attacker) {
-                    "You are the attacker!"
+                if (player == defender) {
+                    "You are the defender!"
                 } else {
-                    "$attacker is the attacker"
+                    "$defender is the defender"
                 }
 
             player.sendMessage(message)
         }
 
-        val attackerPlayableCards = attackerPlayableCards(attacker.hand)
+        val roundResult = playRound(defender, attackers)
+        if (roundResult == RoundResult.PlayerWon) {
+            return false
+        }
+
+        if (roundResult == RoundResult.NoDefense) {
+            // defender takes all cards on the table
+            defender.hand.addAll(table.cardsOnTable)
+        }
+
+        // prepare next turn
+        table.challenges.clear()
+
+        for (attacker in attackers) {
+            refillHand(attacker)
+        }
+
+        refillHand(defender)
+
+        nextTurn()
+        if (roundResult == RoundResult.NoDefense) {
+            // skip the defender's attack turn
+            nextTurn()
+        }
+
+        return true
+    }
+
+    private suspend fun playRound(
+        defender: Player,
+        attackers: List<Player>,
+    ): RoundResult {
+        var roundResult: RoundResult
+        var currentAttackerIndex = 0
+
+        do {
+            val attacker = attackers[currentAttackerIndex]
+
+            do {
+                roundResult = playChallenge(defender, attacker)
+            } while (roundResult == RoundResult.Continue)
+
+            if (roundResult == RoundResult.NoAttack) {
+                currentAttackerIndex++
+            }
+
+            val isStopResult = roundResult in listOf(RoundResult.NoAttack, RoundResult.Continue)
+            val lastAttacker = currentAttackerIndex < attackers.size
+        } while (!isStopResult && !lastAttacker)
+
+        return roundResult
+    }
+
+    private suspend fun playChallenge(
+        defender: Player,
+        attacker: Player,
+    ): RoundResult =
+        coroutineScope {
+            players.forEach { player ->
+                player.sendMessage("Table: ${table.challenges}")
+                player.sendMessage("Deck: ${deck.size}")
+
+                val message =
+                    if (player == attacker) {
+                        "You are the attacker!"
+                    } else {
+                        "$attacker is the attacker"
+                    }
+
+                player.sendMessage(message)
+            }
+
+            val playedAttack = playAttackerTurn(attacker)
+            val playedAttackCard =
+                when (playedAttack) {
+                    is AttackTurnResult.NoAttack, is AttackTurnResult.PlayerWon -> {
+                        return@coroutineScope playedAttack.toRoundResult()
+                    }
+                    is AttackTurnResult.CardPlayed -> playedAttack.card
+                }
+
+            val currentChallenge = attack(playedAttackCard)
+
+            players.forEach { it.sendMessage("attacker played: $playedAttack") }
+
+            val playedDefense = playDefenderTurn(defender)
+            val playedDefenseCard =
+                when (playedDefense) {
+                    is DefenseTurnResult.NoDefense, is DefenseTurnResult.PlayerWon -> {
+                        return@coroutineScope playedDefense.toRoundResult()
+                    }
+                    is DefenseTurnResult.CardPlayed -> playedDefense.card
+                }
+
+            defend(currentChallenge, playedDefenseCard)
+
+            players.forEach { it.sendMessage("defender played: $playedDefense") }
+
+            RoundResult.Continue
+        }
+
+    private suspend fun playAttackerTurn(attacker: Player): AttackTurnResult {
+        val attackerPlayableCards = table.attackerPlayableCards(attacker.hand)
 
         // skip attack if attacker has no playable cards
         if (attackerPlayableCards.isEmpty()) {
-            sendMessageToAllPlayers("attacker has no playable cards. Skipping attack.")
-            return RoundResult.NoAttack
+            players.forEach { it.sendMessage("attacker has no playable cards. Skipping attack.") }
+
+            return AttackTurnResult.NoAttack
         }
 
-        val playedAttack = attacker.playAttackCard(attackerPlayableCards.toList())
-        val currentChallenge = attack(playedAttack)
+        val playedCard = attacker.playAttackCard(attackerPlayableCards.toList())
 
         // an attacker can win after playing his attack
-        if (attacker.hand.isEmpty()) {
-            return RoundResult.PlayerWon
+        return if (attacker.hand.isEmpty()) {
+            AttackTurnResult.PlayerWon
+        } else {
+            AttackTurnResult.CardPlayed(playedCard)
         }
+    }
 
-        sendMessageToAllPlayers("attacker played: $playedAttack")
-
-        val defenderPlayableCards = defenderPlayableCards(defender.hand)
+    private suspend fun playDefenderTurn(defender: Player): DefenseTurnResult {
+        val defenderPlayableCards = table.defenderPlayableCards(defender.hand, mainSuit)
 
         if (defenderPlayableCards.isEmpty()) {
-            sendMessageToAllPlayers("defender has no playable cards")
+            players.forEach { it.sendMessage("defender has no playable cards") }
 
-            return RoundResult.NoDefense
+            return DefenseTurnResult.NoDefense
         }
 
-        val playedDefense = defender.playDefenseCard(defenderPlayableCards.toList())
-        if (playedDefense == null) {
-            sendMessageToAllPlayers("defender skipped defense")
+        val defenderCard = defender.playDefenseCard(defenderPlayableCards.toList())
 
-            return RoundResult.NoDefense
-        }
-
-        defend(currentChallenge, playedDefense)
-
-        // a defender can win after playing his attack
-        if (defender.hand.isEmpty()) {
-            return RoundResult.PlayerWon
-        }
-
-        sendMessageToAllPlayers("defender played: $playedDefense")
-
-        return RoundResult.Continue
+        return defenderCard
+            ?.let { DefenseTurnResult.CardPlayed(it) }
+            ?.let {
+                // a defender can win after playing his attack
+                if (defender.hand.isEmpty()) {
+                    DefenseTurnResult.PlayerWon
+                } else {
+                    it
+                }
+            }
+            ?: DefenseTurnResult.NoDefense
+                .also { players.forEach { it.sendMessage("defender skipped defense") } }
     }
 
     enum class RoundResult {
