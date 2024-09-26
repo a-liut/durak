@@ -60,8 +60,8 @@ class JoinRemoteSessionService(private val config: RemoteSessionConfig) {
                         .bufferedWriter()
                         .use { writer ->
                             while (!player.socket.isClosed) {
-                                // TODO: With this code, the player can send messages at any time.
-                                //  This is not good because the commands queue on the host and it may be confusing
+                                // TO FIX: With this code, the player can send messages at any time.
+                                //  This is not good because the commands queue on the host, and it may be confusing
                                 //  and create issues
                                 val input =
                                     readln()
