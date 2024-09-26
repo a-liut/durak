@@ -34,7 +34,7 @@ class MultiplayerGameRoom(
 
     fun addPlayer(player: Player) {
         if (isFull) {
-            throw IllegalStateException("Maximum number of players reached")
+            error("Maximum number of players reached")
         }
 
         playersInRoom.add(player)

@@ -81,7 +81,7 @@ class Durak(
 
     private fun defenderPlayableCards(playerHand: Set<Card>): Set<Card> {
         if (table.isEmpty()) {
-            throw IllegalStateException("Table is empty: defender cannot play")
+            error("Table is empty: defender cannot play")
         }
 
         val openAttacks = openChallenges().map { it.attack }
