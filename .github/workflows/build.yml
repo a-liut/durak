@@ -73,7 +73,8 @@ jobs:
   # If accepted and published, release workflow would be triggered
   releaseDraft:
     name: Release draft
-    if: github.event_name != 'pull_request'
+    # DISABLED THIS FOR TESTING PURPOSES
+    # if: github.event_name != 'pull_request'
     needs: [ build ]
     runs-on: ubuntu-latest
     permissions:
