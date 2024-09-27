@@ -80,10 +80,9 @@ jobs:
           path: ./build/libs/*.jar
 
   # Prepare a draft release for GitHub Releases page for the manual verification
-  # If accepted and published, release workflow would be triggered
   releaseDraft:
     name: Release draft
-    if: github.event_name != 'pull_request'
+    # if: github.event_name != 'pull_request'
     needs: [ build ]
     runs-on: ubuntu-latest
     permissions:
@@ -94,12 +93,11 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v4
 
-      # Setup Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      # Download artifact created during build step
+      - uses: actions/download-artifact@v4
         with:
-          distribution: temurin
-          java-version: 21
+          path: ./artifacts
+          merge-multiple: true
 
       # Remove old release drafts by using the curl request for the available releases with a draft flag
       - name: Remove Old Release Drafts
@@ -121,4 +119,5 @@ jobs:
             --notes "$(cat << 'EOM'
           ${{ needs.build.outputs.changelog }}
           EOM
-          )"
+          )" \
+          ./artifacts/*.jar
