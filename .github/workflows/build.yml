@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.artifact.outputs.filename }}
-          path: ./build/libs/*/*.jar
+          path: ./build/libs/*.jar
 
   # Prepare a draft release for GitHub Releases page for the manual verification
   # If accepted and published, release workflow would be triggered
