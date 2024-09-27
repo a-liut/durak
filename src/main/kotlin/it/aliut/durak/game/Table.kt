@@ -47,4 +47,6 @@ class Table {
             }
         }.toSet()
     }
+
+    override fun toString(): String = "$challenges"
 }
