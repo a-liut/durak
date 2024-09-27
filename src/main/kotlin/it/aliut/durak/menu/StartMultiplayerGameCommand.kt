@@ -1,4 +1,4 @@
-package org.aliut.durak.menu
+package it.aliut.durak.menu
 
 import com.github.ajalt.clikt.command.SuspendingCliktCommand
 import com.github.ajalt.clikt.core.Context
@@ -7,11 +7,11 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
-import org.aliut.durak.game.Durak
-import org.aliut.durak.game.player.LocalPlayer
-import org.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_PORT
-import org.aliut.durak.runner.MultiplayerGameConfig
-import org.aliut.durak.runner.MultiplayerGameRunner
+import it.aliut.durak.game.Durak
+import it.aliut.durak.game.player.LocalPlayer
+import it.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_PORT
+import it.aliut.durak.runner.MultiplayerGameConfig
+import it.aliut.durak.runner.MultiplayerGameRunner
 
 class StartMultiplayerGameCommand : SuspendingCliktCommand(name = "create") {
     private val port by option("-p", "--port", help = "Server port").int().default(DEFAULT_SERVER_SOCKET_PORT)

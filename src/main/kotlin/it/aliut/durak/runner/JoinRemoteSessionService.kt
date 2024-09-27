@@ -1,4 +1,4 @@
-package org.aliut.durak.runner
+package it.aliut.durak.runner
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package org.aliut.durak.game
+package it.aliut.durak.game
 
 class Table {
     val challenges: MutableSet<Challenge> = mutableSetOf()

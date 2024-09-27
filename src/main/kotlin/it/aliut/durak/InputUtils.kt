@@ -1,4 +1,4 @@
-package org.aliut.durak
+package it.aliut.durak
 
 import java.io.InputStream
 

@@ -1,4 +1,4 @@
-package org.aliut.durak.runner
+package it.aliut.durak.runner
 
 import java.net.Socket
 

@@ -1,4 +1,4 @@
-package org.aliut.durak.game
+package it.aliut.durak.game
 
 enum class Suit(val symbol: Char) {
     CLUBS('\u2663'),

@@ -1,4 +1,4 @@
-package org.aliut.durak.game
+package it.aliut.durak.game
 
 data class Card(val suit: Suit, val rank: Rank) {
     fun greaterThan(other: Card): Boolean = rank.value > other.rank.value

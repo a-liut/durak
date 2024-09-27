@@ -1,7 +1,7 @@
-package org.aliut.durak.game.player
+package it.aliut.durak.game.player
 
-import org.aliut.durak.InputUtils
-import org.aliut.durak.game.Card
+import it.aliut.durak.InputUtils
+import it.aliut.durak.game.Card
 
 class LocalPlayer(name: String) : Player(name) {
     override suspend fun selectAttackCard(playableCards: List<Card>): Card {
