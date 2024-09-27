@@ -13,6 +13,7 @@ class Durak(
     private var mainCard: Card? = deck.drawCard()
     private val mainSuit: Suit = mainCard!!.suit
 
+    private var roundCount: Int = 1
     private var currentDefenderIndex = 0
 
     val winner: Player
@@ -76,6 +77,7 @@ class Durak(
 
             do {
                 val roundResult = round()
+                roundCount++
             } while (roundResult)
 
             players.forEach { it.sendMessage("Winner: ${winner.name}") }
@@ -83,6 +85,7 @@ class Durak(
 
     private suspend fun round(): Boolean {
         players.forEach { player ->
+            player.sendMessage("--- Round $roundCount ---")
             player.sendMessage("Hand: ${player.hand}")
 
             val message =
