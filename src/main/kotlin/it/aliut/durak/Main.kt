@@ -15,7 +15,8 @@ private fun showBanner() {
             ██████╔╝╚██████╔╝██║  ██║██║  ██║██║  ██╗
             ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
                                                      
-        A classic russian game for terminal lovers.
+           A classic russian game for terminal lovers.
+        ________________________________________________
         """.trimIndent()
 
     println(banner)
