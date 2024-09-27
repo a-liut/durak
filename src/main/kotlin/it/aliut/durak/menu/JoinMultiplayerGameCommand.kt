@@ -1,4 +1,4 @@
-package org.aliut.durak.menu
+package it.aliut.durak.menu
 
 import com.github.ajalt.clikt.command.SuspendingCliktCommand
 import com.github.ajalt.clikt.core.Context
@@ -6,10 +6,10 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
-import org.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_HOST
-import org.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_PORT
-import org.aliut.durak.runner.JoinRemoteSessionService
-import org.aliut.durak.runner.RemoteSessionConfig
+import it.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_HOST
+import it.aliut.durak.gameroom.DEFAULT_SERVER_SOCKET_PORT
+import it.aliut.durak.runner.JoinRemoteSessionService
+import it.aliut.durak.runner.RemoteSessionConfig
 
 class JoinMultiplayerGameCommand : SuspendingCliktCommand(name = "join") {
     private val host by option("-h", "--host", help = "Host IP address").default(DEFAULT_SERVER_SOCKET_HOST)

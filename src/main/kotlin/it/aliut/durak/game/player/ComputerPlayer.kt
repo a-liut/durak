@@ -1,6 +1,6 @@
-package org.aliut.durak.game.player
+package it.aliut.durak.game.player
 
-import org.aliut.durak.game.Card
+import it.aliut.durak.game.Card
 
 const val DEFAULT_SKIP_PROBABILITY = 0.5f
 

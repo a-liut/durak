@@ -1,6 +1,6 @@
-package org.aliut.durak.game.player
+package it.aliut.durak.game.player
 
-import org.aliut.durak.game.Card
+import it.aliut.durak.game.Card
 
 sealed class Player(val name: String) {
     val hand = mutableSetOf<Card>()

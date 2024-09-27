@@ -1,9 +1,9 @@
-package org.aliut.durak.game.player
+package it.aliut.durak.game.player
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.aliut.durak.game.Card
+import it.aliut.durak.game.Card
 import java.net.Socket
 
 private val logger = KotlinLogging.logger { }

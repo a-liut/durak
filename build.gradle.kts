@@ -14,7 +14,7 @@ plugins {
     application
 }
 
-group = "org.aliut"
+group = "it.aliut"
 version = "0.0.1"
 
 repositories {
@@ -50,7 +50,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.aliut.durak.MainKt"
+    mainClass = "it.aliut.durak.MainKt"
 }
 
 tasks.named<Test>("test") {

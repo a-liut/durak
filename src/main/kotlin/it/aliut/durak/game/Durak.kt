@@ -1,7 +1,7 @@
-package org.aliut.durak.game
+package it.aliut.durak.game
 
 import kotlinx.coroutines.coroutineScope
-import org.aliut.durak.game.player.Player
+import it.aliut.durak.game.player.Player
 
 const val PLAYER_HAND_SIZE = 6
 

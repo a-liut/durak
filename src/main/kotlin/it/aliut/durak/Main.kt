@@ -1,7 +1,7 @@
-package org.aliut.durak
+package it.aliut.durak
 
 import com.github.ajalt.clikt.command.main
-import org.aliut.durak.menu.DurakMenu
+import it.aliut.durak.menu.DurakMenu
 
 suspend fun main(args: Array<String>) = showBanner().also { DurakMenu.create().main(args) }
 

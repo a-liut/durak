@@ -1,4 +1,4 @@
-package org.aliut.durak.menu
+package it.aliut.durak.menu
 
 import com.github.ajalt.clikt.command.SuspendingCliktCommand
 import com.github.ajalt.clikt.core.subcommands

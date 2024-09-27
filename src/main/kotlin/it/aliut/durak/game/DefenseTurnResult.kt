@@ -1,6 +1,6 @@
-package org.aliut.durak.game
+package it.aliut.durak.game
 
-import org.aliut.durak.game.Durak.RoundResult
+import it.aliut.durak.game.Durak.RoundResult
 
 sealed class DefenseTurnResult {
     object NoDefense : DefenseTurnResult() {

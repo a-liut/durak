@@ -1,8 +1,8 @@
-package org.aliut.durak.runner
+package it.aliut.durak.runner
 
-import org.aliut.durak.game.Durak
-import org.aliut.durak.game.player.Player
-import org.aliut.durak.game.player.RemotePlayer
+import it.aliut.durak.game.Durak
+import it.aliut.durak.game.player.Player
+import it.aliut.durak.game.player.RemotePlayer
 
 abstract class GameRunner {
     suspend fun startGame() {

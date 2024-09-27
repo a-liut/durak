@@ -1,4 +1,4 @@
-package org.aliut.durak.game
+package it.aliut.durak.game
 
 private const val SIX_VALUE = 6
 private const val SEVEN_VALUE = 7
