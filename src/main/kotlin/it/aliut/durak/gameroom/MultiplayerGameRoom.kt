@@ -1,11 +1,11 @@
 package it.aliut.durak.gameroom
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import it.aliut.durak.game.player.Player
+import it.aliut.durak.game.player.RemotePlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import it.aliut.durak.game.player.Player
-import it.aliut.durak.game.player.RemotePlayer
 import java.net.ServerSocket
 
 private val logger = KotlinLogging.logger { }

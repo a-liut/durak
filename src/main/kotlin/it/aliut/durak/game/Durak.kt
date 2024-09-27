@@ -1,7 +1,7 @@
 package it.aliut.durak.game
 
-import kotlinx.coroutines.coroutineScope
 import it.aliut.durak.game.player.Player
+import kotlinx.coroutines.coroutineScope
 
 const val PLAYER_HAND_SIZE = 6
 
@@ -89,7 +89,7 @@ class Durak(
                 if (player == defender) {
                     "You are the defender!"
                 } else {
-                    "$defender is the defender"
+                    "$defender is the defender."
                 }
 
             player.sendMessage(message)
@@ -154,7 +154,7 @@ class Durak(
     ): RoundResult =
         coroutineScope {
             players.forEach { player ->
-                player.sendMessage("Table: ${table.challenges}")
+                player.sendMessage("Table: $table")
                 player.sendMessage("Deck: ${deck.size}")
 
                 val message =
