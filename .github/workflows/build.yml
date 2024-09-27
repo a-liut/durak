@@ -80,7 +80,6 @@ jobs:
           path: ./build/libs/*.jar
 
   # Prepare a draft release for GitHub Releases page for the manual verification
-  # If accepted and published, release workflow would be triggered
   releaseDraft:
     name: Release draft
     if: github.event_name != 'pull_request'
@@ -121,4 +120,5 @@ jobs:
             --notes "$(cat << 'EOM'
           ${{ needs.build.outputs.changelog }}
           EOM
-          )"
+          )" \
+          ./build/libs/*.jar
