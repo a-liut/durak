@@ -77,6 +77,8 @@ class Durak(
             do {
                 val roundResult = round()
             } while (roundResult)
+
+            players.forEach { it.sendMessage("Winner: ${winner.name}") }
         }
 
     private suspend fun round(): Boolean {
