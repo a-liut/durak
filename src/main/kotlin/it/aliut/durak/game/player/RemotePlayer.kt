@@ -21,7 +21,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
 
     override suspend fun selectAttackCard(playableCards: List<Card>): Card =
         withContext(Dispatchers.IO) {
-            sendMessage("Playable cards: $playableCards (hand: $hand)")
+            sendSelectCardIntro(playableCards)
 
             var cardIndex: Int?
 
@@ -40,7 +40,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
 
     override suspend fun selectDefenseCard(playableCards: List<Card>): Card? =
         withContext(Dispatchers.IO) {
-            sendMessage("Playable cards: $playableCards (hand: $hand)")
+            sendSelectCardIntro(playableCards)
 
             var cardIndex: Int?
             do {
@@ -66,5 +66,10 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
             writer.newLine()
             writer.flush()
         }
+    }
+
+    private suspend fun sendSelectCardIntro(playableCards: List<Card>) {
+        sendMessage("Hand: $hand")
+        sendMessage("Playable cards: $playableCards")
     }
 }
