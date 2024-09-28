@@ -35,7 +35,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
                 }
             } while (invalidIndex)
 
-            playableCards[cardIndex!!]
+            playableCards[cardIndex]
         }
 
     override suspend fun selectDefenseCard(playableCards: List<Card>): Card? =
@@ -57,7 +57,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
                 return@withContext null
             }
 
-            playableCards[cardIndex!!]
+            playableCards[cardIndex]
         }
 
     override suspend fun sendMessage(message: String) {
