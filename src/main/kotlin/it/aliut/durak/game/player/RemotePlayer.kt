@@ -26,6 +26,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
             var cardIndex: Int?
 
             do {
+                sendMessage("Enter the index of the card you want to play:")
                 cardIndex = reader.readLine().toIntOrNull()
 
                 val invalidIndex = cardIndex == null || cardIndex !in playableCards.indices
@@ -44,6 +45,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
 
             var cardIndex: Int?
             do {
+                sendMessage("Enter the index of the card you want to play or -1 to skip:")
                 cardIndex = reader.readLine().toIntOrNull()
 
                 val invalidIndex = cardIndex == null || (cardIndex !in playableCards.indices && cardIndex != -1)
