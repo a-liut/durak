@@ -5,7 +5,7 @@ import it.aliut.durak.game.Card
 
 class LocalPlayer(name: String) : Player(name) {
     override suspend fun selectAttackCard(playableCards: List<Card>): Card {
-        sendMessage("Playable cards: $playableCards (hand: $hand)")
+        sendSelectCardIntro(playableCards)
 
         val index =
             InputUtils.readValidInt(
@@ -18,7 +18,7 @@ class LocalPlayer(name: String) : Player(name) {
     }
 
     override suspend fun selectDefenseCard(playableCards: List<Card>): Card? {
-        sendMessage("Playable cards: $playableCards (hand: $hand)")
+        sendSelectCardIntro(playableCards)
 
         val index =
             InputUtils.readValidInt(
@@ -36,5 +36,10 @@ class LocalPlayer(name: String) : Player(name) {
 
     override suspend fun sendMessage(message: String) {
         println(message)
+    }
+
+    private suspend fun sendSelectCardIntro(playableCards: List<Card>) {
+        sendMessage("Hand: $hand")
+        sendMessage("Playable cards: $playableCards")
     }
 }
