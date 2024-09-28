@@ -16,9 +16,6 @@ class Durak(
     private var roundCount: Int = 1
     private var currentDefenderIndex = 0
 
-    val winner: Player
-        get() = players.first { it.hand.isEmpty() }
-
     private fun attack(card: Card): Challenge =
         Challenge(card, null).also {
             table.challenges.add(it)
@@ -75,15 +72,17 @@ class Durak(
                 refillHand(player)
             }
 
+            var roundResult: RoundResult
             do {
-                val roundResult = round()
+                roundResult = round()
                 roundCount++
-            } while (roundResult)
+            } while (roundResult !is RoundResult.PlayerWon)
 
+            val winner = roundResult.player
             players.forEach { it.sendMessage("Winner: ${winner.name}") }
         }
 
-    private suspend fun round(): Boolean {
+    private suspend fun round(): RoundResult {
         players.forEach { player ->
             player.sendMessage("--- Round $roundCount ---")
             player.sendMessage("Hand: ${player.hand}")
@@ -99,11 +98,12 @@ class Durak(
         }
 
         val roundResult = playRound(defender, attackers)
-        if (roundResult == RoundResult.PlayerWon) {
-            return false
+
+        if (roundResult is RoundResult.PlayerWon) {
+            return roundResult
         }
 
-        if (roundResult == RoundResult.NoDefense) {
+        if (roundResult is RoundResult.NoDefense) {
             // defender takes all cards on the table
             defender.hand.addAll(table.cardsOnTable)
         }
@@ -118,12 +118,12 @@ class Durak(
         refillHand(defender)
 
         nextTurn()
-        if (roundResult == RoundResult.NoDefense) {
+        if (roundResult is RoundResult.NoDefense) {
             // skip the defender's attack turn
             nextTurn()
         }
 
-        return true
+        return RoundResult.Continue
     }
 
     private suspend fun playRound(
@@ -138,9 +138,9 @@ class Durak(
 
             do {
                 roundResult = playChallenge(defender, attacker)
-            } while (roundResult == RoundResult.Continue)
+            } while (roundResult is RoundResult.Continue)
 
-            if (roundResult == RoundResult.NoAttack) {
+            if (roundResult is RoundResult.NoAttack) {
                 currentAttackerIndex++
             }
 
@@ -213,7 +213,7 @@ class Durak(
 
         // an attacker can win after playing his attack
         return if (attacker.hand.isEmpty()) {
-            AttackTurnResult.PlayerWon
+            AttackTurnResult.PlayerWon(attacker)
         } else {
             AttackTurnResult.CardPlayed(playedCard)
         }
@@ -235,7 +235,7 @@ class Durak(
             ?.let {
                 // a defender can win after playing his attack
                 if (defender.hand.isEmpty()) {
-                    DefenseTurnResult.PlayerWon
+                    DefenseTurnResult.PlayerWon(defender)
                 } else {
                     it
                 }
@@ -244,11 +244,14 @@ class Durak(
                 .also { players.forEach { it.sendMessage("defender skipped defense") } }
     }
 
-    enum class RoundResult {
-        NoAttack,
-        NoDefense,
-        PlayerWon,
-        Continue,
+    sealed class RoundResult {
+        object NoAttack : RoundResult()
+
+        object NoDefense : RoundResult()
+
+        data class PlayerWon(val player: Player) : RoundResult()
+
+        object Continue : RoundResult()
     }
 
     companion object {
