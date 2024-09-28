@@ -24,21 +24,21 @@ durak join create --player-name Luigi
 
 `durak create` creates a new game session. It accepts the following input:
 
-| Name                | Type    | Default | Optional | Description                                          |
-|---------------------|---------|---------|----------|------------------------------------------------------|
-| --player-count, -pc | Integer |         | no       | How many players will be playing                     |
-| --player-name, -pn  | String  |         | no       | The name of the local player                         |
-| --port, -p          | Integer | 9999    | yes      | Port to be used for communicating with other players |
+| Name                    | Type    | Default | Optional | Description                                          |
+|-------------------------|---------|---------|----------|------------------------------------------------------|
+| `--player-count`, `-pc` | Integer |         | no       | How many players will be playing                     |
+| `--player-name`, `-pn`  | String  |         | no       | The name of the local player                         |
+| `--port`, `-p`          | Integer | 9999    | yes      | Port to be used for communicating with other players |
 
 ### Join game session
 
 `durak join` joins an existing game session. It accepts the following inputs:
 
-| Name               | Type    | Default   | Optional | Description                                     |
-|--------------------|---------|-----------|----------|-------------------------------------------------|
-| --host, -h         | String  | localhost | yes      | The url of the host                             |
-| --port, -p         | Integer | 9999      | yes      | Port to be used for communicating with the host |
-| --player-name, -pn | String  |           | no       | The name of the local player                    |
+| Name                   | Type    | Default   | Optional | Description                                     |
+|------------------------|---------|-----------|----------|-------------------------------------------------|
+| `--host`, `-h`         | String  | localhost | yes      | The url of the host                             |
+| `--port`, `-p`         | Integer | 9999      | yes      | Port to be used for communicating with the host |
+| `--player-name`, `-pn` | String  |           | no       | The name of the local player                    |
 
 ## Running the game
 
@@ -65,5 +65,5 @@ Build the game by running:
 Then run the jar file:
 
 ```gradle
- java -jar build/libs/durak-0.0.1-all.jar
+ java -jar build/libs/durak-0.0.1-all.jar create -pc 2 -pn Mario
 ```
