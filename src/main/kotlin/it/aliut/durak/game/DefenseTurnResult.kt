@@ -14,6 +14,8 @@ sealed class DefenseTurnResult {
 
     data class CardPlayed(val card: Card) : DefenseTurnResult() {
         override fun toRoundResult(): RoundResult = RoundResult.Continue
+
+        override fun toString(): String = card.toString()
     }
 
     abstract fun toRoundResult(): RoundResult
