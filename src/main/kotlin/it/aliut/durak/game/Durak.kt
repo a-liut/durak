@@ -222,7 +222,16 @@ class Durak(
 
         // skip attack if attacker has no playable cards
         if (attackerPlayableCards.isEmpty()) {
-            players.forEach { it.sendMessage("$attacker has no playable cards!") }
+            players.forEach { player ->
+                val message =
+                    if (player == attacker) {
+                        "You have no playable cards!"
+                    } else {
+                        "$attacker has no playable cards!"
+                    }
+
+                player.sendMessage(message)
+            }
 
             return AttackTurnResult.NoAttack
         }
@@ -241,7 +250,16 @@ class Durak(
         val defenderPlayableCards = table.defenderPlayableCards(defender.hand, mainSuit)
 
         if (defenderPlayableCards.isEmpty()) {
-            players.forEach { it.sendMessage("$defender has no playable cards!") }
+            players.forEach { player ->
+                val message =
+                    if (player == defender) {
+                        "You have no playable cards!"
+                    } else {
+                        "$defender has no playable cards!"
+                    }
+
+                player.sendMessage(message)
+            }
 
             return DefenseTurnResult.NoDefense
         }
