@@ -1,7 +1,7 @@
 package it.aliut.durak.game
 
-import kotlinx.coroutines.coroutineScope
 import it.aliut.durak.game.player.Player
+import kotlinx.coroutines.coroutineScope
 
 const val PLAYER_HAND_SIZE = 6
 
@@ -13,10 +13,8 @@ class Durak(
     private var mainCard: Card? = deck.drawCard()
     private val mainSuit: Suit = mainCard!!.suit
 
+    private var roundCount: Int = 1
     private var currentDefenderIndex = 0
-
-    val winner: Player
-        get() = players.first { it.hand.isEmpty() }
 
     private fun attack(card: Card): Challenge =
         Challenge(card, null).also {
@@ -74,31 +72,38 @@ class Durak(
                 refillHand(player)
             }
 
+            var roundResult: RoundResult
             do {
-                val roundResult = round()
-            } while (roundResult)
+                roundResult = round()
+                roundCount++
+            } while (roundResult !is RoundResult.PlayerWon)
+
+            val winner = roundResult.player
+            players.forEach { it.sendMessage("Winner: ${winner.name}") }
         }
 
-    private suspend fun round(): Boolean {
+    private suspend fun round(): RoundResult {
         players.forEach { player ->
+            player.sendMessage("--- Round $roundCount ---")
             player.sendMessage("Hand: ${player.hand}")
 
             val message =
                 if (player == defender) {
-                    "You are the defender!"
+                    "⛨ You are the defender!"
                 } else {
-                    "$defender is the defender"
+                    "$defender is the defender."
                 }
 
             player.sendMessage(message)
         }
 
         val roundResult = playRound(defender, attackers)
-        if (roundResult == RoundResult.PlayerWon) {
-            return false
+
+        if (roundResult is RoundResult.PlayerWon) {
+            return roundResult
         }
 
-        if (roundResult == RoundResult.NoDefense) {
+        if (roundResult is RoundResult.NoDefense) {
             // defender takes all cards on the table
             defender.hand.addAll(table.cardsOnTable)
         }
@@ -113,12 +118,12 @@ class Durak(
         refillHand(defender)
 
         nextTurn()
-        if (roundResult == RoundResult.NoDefense) {
+        if (roundResult is RoundResult.NoDefense) {
             // skip the defender's attack turn
             nextTurn()
         }
 
-        return true
+        return RoundResult.Continue
     }
 
     private suspend fun playRound(
@@ -133,9 +138,9 @@ class Durak(
 
             do {
                 roundResult = playChallenge(defender, attacker)
-            } while (roundResult == RoundResult.Continue)
+            } while (roundResult is RoundResult.Continue)
 
-            if (roundResult == RoundResult.NoAttack) {
+            if (roundResult is RoundResult.NoAttack) {
                 currentAttackerIndex++
             }
 
@@ -152,12 +157,12 @@ class Durak(
     ): RoundResult =
         coroutineScope {
             players.forEach { player ->
-                player.sendMessage("Table: ${table.challenges}")
+                player.sendMessage("Table: $table")
                 player.sendMessage("Deck: ${deck.size}")
 
                 val message =
                     if (player == attacker) {
-                        "You are the attacker!"
+                        "⚔ You are the attacker!"
                     } else {
                         "$attacker is the attacker"
                     }
@@ -176,7 +181,16 @@ class Durak(
 
             val currentChallenge = attack(playedAttackCard)
 
-            players.forEach { it.sendMessage("attacker played: $playedAttack") }
+            players.forEach { player ->
+                val message =
+                    if (player == attacker) {
+                        "You played $playedAttack"
+                    } else {
+                        "$attacker played $playedAttack"
+                    }
+
+                player.sendMessage(message)
+            }
 
             val playedDefense = playDefenderTurn(defender)
             val playedDefenseCard =
@@ -189,7 +203,16 @@ class Durak(
 
             defend(currentChallenge, playedDefenseCard)
 
-            players.forEach { it.sendMessage("defender played: $playedDefense") }
+            players.forEach { player ->
+                val message =
+                    if (player == defender) {
+                        "You played $playedDefense"
+                    } else {
+                        "$defender played $playedDefense"
+                    }
+
+                player.sendMessage(message)
+            }
 
             RoundResult.Continue
         }
@@ -199,7 +222,16 @@ class Durak(
 
         // skip attack if attacker has no playable cards
         if (attackerPlayableCards.isEmpty()) {
-            players.forEach { it.sendMessage("attacker has no playable cards. Skipping attack.") }
+            players.forEach { player ->
+                val message =
+                    if (player == attacker) {
+                        "You have no playable cards!"
+                    } else {
+                        "$attacker has no playable cards!"
+                    }
+
+                player.sendMessage(message)
+            }
 
             return AttackTurnResult.NoAttack
         }
@@ -208,7 +240,7 @@ class Durak(
 
         // an attacker can win after playing his attack
         return if (attacker.hand.isEmpty()) {
-            AttackTurnResult.PlayerWon
+            AttackTurnResult.PlayerWon(attacker)
         } else {
             AttackTurnResult.CardPlayed(playedCard)
         }
@@ -218,7 +250,16 @@ class Durak(
         val defenderPlayableCards = table.defenderPlayableCards(defender.hand, mainSuit)
 
         if (defenderPlayableCards.isEmpty()) {
-            players.forEach { it.sendMessage("defender has no playable cards") }
+            players.forEach { player ->
+                val message =
+                    if (player == defender) {
+                        "You have no playable cards!"
+                    } else {
+                        "$defender has no playable cards!"
+                    }
+
+                player.sendMessage(message)
+            }
 
             return DefenseTurnResult.NoDefense
         }
@@ -230,20 +271,23 @@ class Durak(
             ?.let {
                 // a defender can win after playing his attack
                 if (defender.hand.isEmpty()) {
-                    DefenseTurnResult.PlayerWon
+                    DefenseTurnResult.PlayerWon(defender)
                 } else {
                     it
                 }
             }
             ?: DefenseTurnResult.NoDefense
-                .also { players.forEach { it.sendMessage("defender skipped defense") } }
+                .also { players.forEach { it.sendMessage("$defender did not defend!") } }
     }
 
-    enum class RoundResult {
-        NoAttack,
-        NoDefense,
-        PlayerWon,
-        Continue,
+    sealed class RoundResult {
+        object NoAttack : RoundResult()
+
+        object NoDefense : RoundResult()
+
+        data class PlayerWon(val player: Player) : RoundResult()
+
+        object Continue : RoundResult()
     }
 
     companion object {

@@ -1,9 +1,9 @@
 package it.aliut.durak.game.player
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import it.aliut.durak.game.Card
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import it.aliut.durak.game.Card
 import java.net.Socket
 
 private val logger = KotlinLogging.logger { }
@@ -21,11 +21,12 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
 
     override suspend fun selectAttackCard(playableCards: List<Card>): Card =
         withContext(Dispatchers.IO) {
-            sendMessage("Playable cards: $playableCards (hand: $hand)")
+            sendSelectCardIntro(playableCards)
 
             var cardIndex: Int?
 
             do {
+                sendMessage("Enter the index of the card you want to play:")
                 cardIndex = reader.readLine().toIntOrNull()
 
                 val invalidIndex = cardIndex == null || cardIndex !in playableCards.indices
@@ -35,15 +36,16 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
                 }
             } while (invalidIndex)
 
-            playableCards[cardIndex!!]
+            playableCards[cardIndex]
         }
 
     override suspend fun selectDefenseCard(playableCards: List<Card>): Card? =
         withContext(Dispatchers.IO) {
-            sendMessage("Playable cards: $playableCards (hand: $hand)")
+            sendSelectCardIntro(playableCards)
 
             var cardIndex: Int?
             do {
+                sendMessage("Enter the index of the card you want to play or -1 to skip:")
                 cardIndex = reader.readLine().toIntOrNull()
 
                 val invalidIndex = cardIndex == null || (cardIndex !in playableCards.indices && cardIndex != -1)
@@ -57,7 +59,7 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
                 return@withContext null
             }
 
-            playableCards[cardIndex!!]
+            playableCards[cardIndex]
         }
 
     override suspend fun sendMessage(message: String) {
@@ -66,5 +68,10 @@ class RemotePlayer(name: String, private val socket: Socket) : Player(name) {
             writer.newLine()
             writer.flush()
         }
+    }
+
+    private suspend fun sendSelectCardIntro(playableCards: List<Card>) {
+        sendMessage("Hand: $hand")
+        sendMessage("Playable cards: $playableCards")
     }
 }

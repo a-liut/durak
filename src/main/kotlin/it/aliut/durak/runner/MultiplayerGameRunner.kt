@@ -1,9 +1,9 @@
 package it.aliut.durak.runner
 
-import kotlinx.coroutines.coroutineScope
 import it.aliut.durak.game.player.LocalPlayer
 import it.aliut.durak.game.player.Player
 import it.aliut.durak.gameroom.MultiplayerGameRoom
+import kotlinx.coroutines.coroutineScope
 
 data class MultiplayerGameConfig(
     val port: Int,
